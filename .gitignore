@@ -1,0 +1,28 @@
+# IDE and Editor Cache
+.antigravity/
+.gemini/
+.idea/
+.vscode/
+
+# Node dependencies
+node_modules/
+frontend/node_modules/
+
+# Build outputs
+target/
+backend/target/
+frontend/dist/
+frontend/dist-ssr/
+
+# Local media storage
+haribhakthi_media_storage/
+
+# Environment & Logs
+*.log
+.env
+.env.local
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

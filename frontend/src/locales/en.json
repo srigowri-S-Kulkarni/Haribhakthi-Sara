@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "home": "Home",
+    "artists": "Artists",
+    "playlists": "Playlists",
+    "search": "Search",
+    "library": "Your Library",
+    "admin": "Admin Dashboard",
+    "login": "Log in",
+    "register": "Register",
+    "logout": "Log out",
+    "profile": "Profile"
+  },
+  "home": {
+    "welcome": "Welcome to Haribhakthi Sara",
+    "subtitle": "Immerse in Divine Devotional Music",
+    "featuredArtists": "Featured Artists",
+    "curatedPlaylists": "Curated Playlists",
+    "popularSongs": "Popular Devotional Songs",
+    "recentlyPlayed": "Recently Played"
+  },
+  "player": {
+    "nowPlaying": "Now Playing",
+    "queue": "Queue",
+    "playAll": "Play All",
+    "guestNotice": "Log in to save favorites and build personal playlists."
+  },
+  "actions": {
+    "play": "Play",
+    "pause": "Pause",
+    "like": "Like",
+    "liked": "Liked",
+    "addToList": "Add to Playlist",
+    "createPlaylist": "Create Playlist",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "deactivate": "Soft Delete",
+    "restore": "Restore",
+    "permanentDelete": "Permanently Delete",
+    "switchLang": "ಭಾಷೆ ಬದಲಾಯಿಸಿ (KN)"
+  },
+  "search": {
+    "placeholder": "Search songs or artists...",
+    "noResults": "No devotional songs found."
+  },
+  "library": {
+    "likedSongs": "Liked Songs",
+    "recentlyPlayed": "Recently Played",
+    "personalPlaylists": "Your Playlists",
+    "guestPrompt": "Log in to access your personal library, liked songs, and custom playlists."
+  },
+  "admin": {
+    "manageArtists": "Manage Artists",
+    "manageSongs": "Manage Songs",
+    "managePlaylists": "Manage Playlists",
+    "addArtist": "Add Artist",
+    "addSong": "Upload Song",
+    "addPlaylist": "Create Curated Playlist"
+  }
+}
