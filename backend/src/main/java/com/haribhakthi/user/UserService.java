@@ -24,17 +24,20 @@ public class UserService {
     private final ListeningHistoryRepository listeningHistoryRepository;
     private final PlaylistRepository playlistRepository;
     private final PlaylistSongRepository playlistSongRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
                        FavoriteRepository favoriteRepository,
                        ListeningHistoryRepository listeningHistoryRepository,
                        PlaylistRepository playlistRepository,
-                       PlaylistSongRepository playlistSongRepository) {
+                       PlaylistSongRepository playlistSongRepository,
+                       org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.favoriteRepository = favoriteRepository;
         this.listeningHistoryRepository = listeningHistoryRepository;
         this.playlistRepository = playlistRepository;
         this.playlistSongRepository = playlistSongRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto getUserProfile(UUID userId) {
@@ -60,9 +63,35 @@ public class UserService {
         if (updates.containsKey("preferredLanguage")) {
             user.setPreferredLanguage(updates.get("preferredLanguage"));
         }
+        if (updates.containsKey("email")) {
+            String newEmail = updates.get("email").trim();
+            if (!newEmail.equalsIgnoreCase(user.getEmail())) {
+                if (userRepository.existsByEmail(newEmail)) {
+                    throw new BadRequestException("Email is already in use by another account.");
+                }
+                user.setEmail(newEmail);
+            }
+        }
 
         User updatedUser = userRepository.save(user);
         return new UserDto(updatedUser);
+    }
+
+    @Transactional
+    public void changePassword(UUID userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        if (currentPassword == null || newPassword == null || newPassword.isBlank()) {
+            throw new BadRequestException("Current password and new password are required.");
+        }
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new BadRequestException("Current password is incorrect.");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     @Transactional

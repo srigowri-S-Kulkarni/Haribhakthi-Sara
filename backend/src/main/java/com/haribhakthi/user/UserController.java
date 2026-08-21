@@ -28,4 +28,11 @@ public class UserController {
                                                  @RequestBody Map<String, String> updates) {
         return ResponseEntity.ok(userService.updateProfile(principal.getId(), updates));
     }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Map<String, String>> changePassword(@AuthenticationPrincipal UserPrincipal principal,
+                                                             @RequestBody Map<String, String> request) {
+        userService.changePassword(principal.getId(), request.get("currentPassword"), request.get("newPassword"));
+        return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
+    }
 }

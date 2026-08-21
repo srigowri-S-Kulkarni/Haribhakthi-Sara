@@ -15,6 +15,12 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @org.springframework.beans.factory.annotation.Value("${app.admin.email:admin@haribhakthi.com}")
+    private String adminEmail;
+
+    @org.springframework.beans.factory.annotation.Value("${app.admin.initial-password:Admin@123}")
+    private String adminPassword;
+
     public DataSeeder(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -22,16 +28,12 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Optional<User> adminOpt = userRepository.findByEmail("admin@haribhakthi.com");
-        if (adminOpt.isPresent()) {
-            User admin = adminOpt.get();
-            admin.setPasswordHash(passwordEncoder.encode("Admin@123"));
-            userRepository.save(admin);
-        } else {
+        Optional<User> adminOpt = userRepository.findByEmail(adminEmail);
+        if (adminOpt.isEmpty()) {
             User admin = new User();
-            admin.setName("Admin User");
-            admin.setEmail("admin@haribhakthi.com");
-            admin.setPasswordHash(passwordEncoder.encode("Admin@123"));
+            admin.setName("Platform Administrator");
+            admin.setEmail(adminEmail);
+            admin.setPasswordHash(passwordEncoder.encode(adminPassword));
             admin.setRole(Role.ADMIN);
             admin.setPreferredLanguage("kn");
             userRepository.save(admin);

@@ -57,7 +57,7 @@ public class SecurityConfig {
                 // Authenticated user endpoints
                 .requestMatchers("/api/favorites/**").authenticated()
                 .requestMatchers("/api/history/**").authenticated()
-                .requestMatchers("/api/users/me").authenticated()
+                .requestMatchers("/api/users/me", "/api/users/me/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/playlists/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/playlists/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/api/playlists/**").authenticated()
@@ -79,10 +79,21 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    @org.springframework.beans.factory.annotation.Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:8080,http://localhost}")
+    private String allowedOrigins;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        List<String> origins = java.util.Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(java.util.stream.Collectors.toList());
+        if (origins.contains("*")) {
+            configuration.setAllowedOriginPatterns(List.of("*"));
+        } else {
+            configuration.setAllowedOrigins(origins);
+        }
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Content-Range", "Accept-Ranges", "Content-Length", "Content-Type"));

@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Database Service (PostgreSQL)
+  postgres:
+    image: postgres:16-alpine
+    container_name: haribhakthi_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-haribhakthi_sara}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${DB_USER:-postgres} -d $${DB_NAME:-haribhakthi_sara}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hbs_network
+
+  # Backend Service (Spring Boot)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: haribhakthi_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-haribhakthi_sara}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - MEDIA_STORAGE_PATH=/var/haribhakthi_media_storage
+      - APP_STORAGE_TYPE=${APP_STORAGE_TYPE:-local}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost,http://localhost:80,http://localhost:3000,http://localhost:8080}
+    volumes:
+      - media_data:/var/haribhakthi_media_storage
+    networks:
+      - hbs_network
+
+  # Frontend Service (React / Vite + Nginx Reverse Proxy)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: haribhakthi_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - hbs_network
+
+volumes:
+  postgres_data:
+  media_data:
+
+networks:
+  hbs_network:
+    driver: bridge

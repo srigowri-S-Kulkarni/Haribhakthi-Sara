@@ -14,12 +14,15 @@ import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.util.UUID;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+
 @Service
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "local", matchIfMissing = true)
 public class LocalStorageService implements StorageService {
 
     private final Path rootLocation;
 
-    public LocalStorageService(@Value("${app.storage.base-path:C:/haribhakthi_media_storage}") String basePath) {
+    public LocalStorageService(@Value("${app.storage.base-path:${MEDIA_STORAGE_PATH:/var/haribhakthi_media_storage}}") String basePath) {
         this.rootLocation = Paths.get(basePath).toAbsolutePath().normalize();
     }
 
