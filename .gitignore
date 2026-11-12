@@ -3,6 +3,12 @@
 .gemini/
 .idea/
 .vscode/
+.project
+.classpath
+.settings/
+backend/.project
+backend/.classpath
+backend/.settings/
 
 # Node dependencies
 node_modules/
@@ -17,12 +23,19 @@ frontend/dist-ssr/
 # Local media storage
 haribhakthi_media_storage/
 
-# Environment & Logs
+# Environment & Secret files
 *.log
 .env
-.env.local
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Windows / OS metadata
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+Thumbs.db
+[Dd]esktop.ini

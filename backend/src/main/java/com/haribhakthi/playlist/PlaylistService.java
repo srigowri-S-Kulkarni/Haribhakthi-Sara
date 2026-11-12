@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class PlaylistService {
 
     private final PlaylistRepository playlistRepository;

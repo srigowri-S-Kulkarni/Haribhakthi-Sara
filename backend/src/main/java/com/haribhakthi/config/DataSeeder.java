@@ -37,6 +37,12 @@ public class DataSeeder implements CommandLineRunner {
             admin.setRole(Role.ADMIN);
             admin.setPreferredLanguage("kn");
             userRepository.save(admin);
+        } else {
+            User admin = adminOpt.get();
+            if (!passwordEncoder.matches(adminPassword, admin.getPasswordHash())) {
+                admin.setPasswordHash(passwordEncoder.encode(adminPassword));
+                userRepository.save(admin);
+            }
         }
     }
 }
